@@ -77,7 +77,7 @@ function Home() {
         <section className="bg-blue-600 text-white py-16 text-center">
 
           <h2 className="text-4xl font-bold mb-4">
-            Transform Guest Feedback Into Actionable Insights
+            Transform Guest Feedback Into Smart Business Insights
           </h2>
 
           <p className="text-lg mb-6">

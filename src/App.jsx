@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import ComponentsDemo from "./pages/ComponentsDemo";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -26,6 +27,11 @@ function App() {
               <Dashboard />
             </ProtectedRoute>
           }
+        />
+
+        <Route
+          path="/components"
+          element={<ComponentsDemo />}
         />
 
       </Routes>

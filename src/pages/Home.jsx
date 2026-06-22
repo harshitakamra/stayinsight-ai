@@ -2,11 +2,19 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Card from "../components/Card";
 import Footer from "../components/Footer";
+import { useTheme } from "../context/ThemeContext";
 
 function Home() {
-  return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+  const { darkMode } = useTheme();
 
+  return (
+    <div
+      className={`min-h-screen flex flex-col ${
+        darkMode
+          ? "bg-slate-950 text-white"
+          : "bg-gray-50 text-black"
+      }`}
+    >
       <Navbar />
 
       <div className="flex-grow">
@@ -40,35 +48,20 @@ function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
 
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-2xl font-bold mb-3">
-                Save Valuable Time
-              </h3>
+            <Card
+              title="Save Valuable Time"
+              text="Stop manually reading hundreds of reviews from different platforms."
+            />
 
-              <p>
-                Stop manually reading hundreds of reviews from different platforms.
-              </p>
-            </div>
+            <Card
+              title="Understand Guest Needs"
+              text="Discover recurring compliments and complaints across reviews."
+            />
 
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-2xl font-bold mb-3">
-                Understand Guest Needs
-              </h3>
-
-              <p>
-                Discover recurring compliments and complaints across reviews.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-2xl font-bold mb-3">
-                Improve Service Quality
-              </h3>
-
-              <p>
-                Use AI-generated insights to enhance guest satisfaction.
-              </p>
-            </div>
+            <Card
+              title="Improve Service Quality"
+              text="Use AI-generated insights to enhance guest satisfaction."
+            />
 
           </div>
 
@@ -93,7 +86,6 @@ function Home() {
       </div>
 
       <Footer />
-
     </div>
   );
 }

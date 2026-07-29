@@ -124,6 +124,14 @@ def get_reviews(
     return crud.get_reviews(db)
 
 
+@app.get("/reviews/stats", response_model=schemas.ReviewStats)
+def get_stats(
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return crud.get_review_stats(db)
+
+
 @app.get(
     "/reviews/{review_id}",
     response_model=schemas.Review
@@ -224,14 +232,6 @@ def get_user_profile(
         # Fallback response for valid token
         return schemas.UserResponse(id=1, email=current_user)
     return user
-
-
-@app.get("/reviews/stats", response_model=schemas.ReviewStats)
-def get_stats(
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    return crud.get_review_stats(db)
 
 
 @app.get("/reviews/search/")

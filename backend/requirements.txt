@@ -2,6 +2,7 @@
 uvicorn==0.30.6
 sqlalchemy==2.0.35
 pydantic==2.9.2
+pydantic-core==2.18.0
 python-dotenv==1.2.2
 python-jose==3.5.0
 passlib==1.7.4

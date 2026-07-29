@@ -45,9 +45,6 @@ function Login() {
       navigate("/dashboard");
 
     } catch (error) {
-
-      console.log(error);
-
       if (error.response) {
         alert(error.response.data.detail);
       } else {

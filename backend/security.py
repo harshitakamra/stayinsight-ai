@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -6,7 +7,7 @@ from passlib.context import CryptContext
 # JWT CONFIGURATION
 # ==========================
 
-SECRET_KEY = "stayinsight-ai-secret-key-2026"
+SECRET_KEY = os.getenv("JWT_SECRET", "stayinsight-ai-secret-key-2026")
 
 ALGORITHM = "HS256"
 

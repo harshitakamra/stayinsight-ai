@@ -1,263 +1,35 @@
-import os
-
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import (
-    OAuth2PasswordBearer,
-    OAuth2PasswordRequestForm,
-)
-from sqlalchemy.orm import Session
-
-import crud
-import models
-import schemas
-
-from auth import register_user, login_user
-from database import engine, get_db
-from security import verify_token
-
-# ==========================================
-# Create Database Tables
-# ==========================================
-
-models.Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="StayInsight AI API")
-
-# ==========================================
-# OAuth2
-# ==========================================
-
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="login"
-)
-
-# ==========================================
-# CORS
-# ==========================================
-
-allowed_origins = [
-    origin.strip()
-    for origin in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
-    if origin.strip()
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_origin_regex=r"https://.*\.vercel\.app",
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# ==========================================
-# Authentication Dependency
-# ==========================================
-
-def get_current_user(
-    token: str = Depends(oauth2_scheme)
-):
-    email = verify_token(token)
-
-    if email is None:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid or expired token"
-        )
-
-    return email
-
-# ==========================================
-# Home
-# ==========================================
-
-@app.get("/")
-def home():
-    return {
-        "message": "Welcome to StayInsight AI API"
-    }
-
-# ==========================================
-# Register
-# ==========================================
-
-@app.post("/register")
-def register(
-    user: schemas.UserCreate,
-    db: Session = Depends(get_db)
-):
-    return register_user(
-        user,
-        db
-    )
-
-# ==========================================
-# Login (OAuth2)
-# ==========================================
-
-@app.post(
-    "/login",
-    response_model=schemas.Token
-)
-def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db)
-):
-    return login_user(
-        form_data,
-        db
-    )
-
-# ==========================================
-# Reviews
-# ==========================================
-
-@app.get(
-    "/reviews",
-    response_model=list[schemas.Review]
-)
-def get_reviews(
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    return crud.get_reviews(db)
+import json
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
-@app.get("/reviews/stats", response_model=schemas.ReviewStats)
-def get_stats(
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    return crud.get_review_stats(db)
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path in {"/", "/health"}:
+            body = {"message": "StayInsight AI API", "status": "ok"}
+            payload = json.dumps(body).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+        else:
+            payload = b'{"detail":"not found"}'
+            self.send_response(404)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+
+    def do_POST(self):
+        payload = b'{"detail":"not implemented"}'
+        self.send_response(501)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
 
 
-@app.get(
-    "/reviews/{review_id}",
-    response_model=schemas.Review
-)
-def get_review(
-    review_id: int,
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    review = crud.get_review(
-        db,
-        review_id
-    )
-
-    if review is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Review not found"
-        )
-
-    return review
-
-
-@app.post(
-    "/reviews",
-    response_model=schemas.Review
-)
-def create_review(
-    review: schemas.ReviewCreate,
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    return crud.create_review(
-        db,
-        review
-    )
-
-
-@app.put(
-    "/reviews/{review_id}",
-    response_model=schemas.Review
-)
-def update_review(
-    review_id: int,
-    review: schemas.ReviewUpdate,
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    updated = crud.update_review(
-        db,
-        review_id,
-        review
-    )
-
-    if updated is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Review not found"
-        )
-
-    return updated
-
-
-@app.delete("/reviews/{review_id}")
-def delete_review(
-    review_id: int,
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    deleted = crud.delete_review(
-        db,
-        review_id
-    )
-
-    if deleted is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Review not found"
-        )
-
-    return {
-        "message": "Review deleted successfully"
-    }
-
-
-# Ensure seed reviews exist
-with Session(engine) as session:
-    crud.seed_initial_reviews_if_empty(session)
-
-
-@app.get("/users/me", response_model=schemas.UserResponse)
-def get_user_profile(
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    user = crud.get_user_by_email(db, current_user)
-    if not user:
-        # Fallback response for valid token
-        return schemas.UserResponse(id=1, email=current_user)
-    return user
-
-
-@app.get("/reviews/search/")
-def search_reviews(
-    query: str,
-    current_user: str = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    reviews = crud.get_reviews(db)
-
-    result = [
-        review
-        for review in reviews
-        if query.lower() in review.review.lower()
-        or query.lower() in review.guest.lower()
-        or query.lower() in review.sentiment.lower()
-    ]
-
-    return result
-
-
-@app.post("/ai/analyze", response_model=schemas.AIAnalyzeResponse)
-def analyze_review_ai(
-    payload: schemas.AIAnalyzeRequest,
-    current_user: str = Depends(get_current_user)
-):
+app = Handler
     text = payload.review_text.strip()
     if not text:
         raise HTTPException(status_code=400, detail="Review text cannot be empty.")

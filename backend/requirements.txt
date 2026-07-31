@@ -1,1 +1,1 @@
-﻿# Minimal backend dependencies for Render compatibility
+﻿uvicorn==0.22.0

@@ -10,11 +10,27 @@ const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
   ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()).filter(Boolean)
   : [];
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const originMatchesPattern = (origin, pattern) => {
+  if (pattern === "*") return true;
+  if (pattern === origin) return true;
+  if (pattern.includes("*")) {
+    const regex = new RegExp(`^
+${pattern.split("*").map(escapeRegExp).join(".*")}$`);
+    return regex.test(origin);
+  }
+  return false;
+};
+
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      if (allowedOrigins.length === 0) {
+        return callback(null, true);
+      }
+      const allowed = allowedOrigins.some((pattern) => originMatchesPattern(origin, pattern));
+      if (allowed) {
         return callback(null, true);
       }
       callback(new Error(`CORS origin denied: ${origin}`));

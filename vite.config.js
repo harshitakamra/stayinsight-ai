@@ -10,4 +10,9 @@ export default defineConfig({
   server: {
     open: true,
   },
+  preview: {
+    allowedHosts: [
+      'stayinsight-ai-new.onrender.com',
+    ],
+  },
 })

@@ -1,18 +1,14 @@
 services:
   - type: web
     name: stayinsight-backend
-    env: python
+    env: node
     region: oregon
     rootDir: backend
-    buildCommand: python -m pip install --upgrade pip setuptools wheel
-    startCommand: python simple_app.py
+    buildCommand: npm install
+    startCommand: npm start
     healthCheckPath: /
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.12.0
-      - key: RENDER_PYTHON_VERSION
-        value: 3.12.0
       - key: JWT_SECRET
         value: stayinsight-super-secret-key-2026
       - key: CORS_ALLOWED_ORIGINS
-        value: http://localhost:5173
+        value: https://stayinsight-igrdoll26-harshitakamras-projects.vercel.app,https://stayinsight-ai.vercel.app

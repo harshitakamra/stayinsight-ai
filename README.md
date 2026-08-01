@@ -47,15 +47,21 @@ uvicorn main:app --reload
 
 ## Week 9 Deployment Checklist
 
-### Frontend deployment
+### Frontend deployment (Vercel)
 - Create a Vercel project from the GitHub repository.
-- Set the root directory to the frontend root if needed.
-- Add the environment variable VITE_API_URL with your deployed backend URL.
+- Set the root directory to the repository root where `package.json` and `vite.config.js` live.
+- Use `npm run build` as the build command and `dist` as the output directory.
+- Add an environment variable:
+  - `VITE_API_URL` = `https://<your-render-backend-url>`
+- If you want to preview locally with the Render host, Vite now allows `stayinsight-ai-new.onrender.com` in `vite.config.js`.
 
-### Backend deployment
-- Deploy the backend folder to Render.
-- Use the build/start commands appropriate for the service.
-- Add environment variables such as DATABASE_URL, JWT_SECRET, and CORS_ALLOWED_ORIGINS.
+### Backend deployment (Render)
+- Deploy the `backend` folder as a Node web service.
+- Use `npm install` as the build command.
+- Use `npm start` as the start command.
+- Add environment variables:
+  - `JWT_SECRET`
+  - `CORS_ALLOWED_ORIGINS` = `https://<your-vercel-frontend-url>`
 
 ### Live URLs
 - Frontend URL: add your Vercel URL here

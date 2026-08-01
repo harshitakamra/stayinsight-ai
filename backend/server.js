@@ -3,10 +3,14 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 
 const app = express();
-const PORT = 8000;
-const SECRET_KEY = "stayinsight_secret_key_week8";
+const PORT = process.env.PORT || 8000;
+const SECRET_KEY = process.env.JWT_SECRET || "stayinsight_secret_key_week8";
 
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
+app.use((req, res, next) => {
+  console.log("REQ", req.method, req.path, "Origin:", req.headers.origin);
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

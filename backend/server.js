@@ -6,7 +6,22 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 const SECRET_KEY = process.env.JWT_SECRET || "stayinsight_secret_key_week8";
 
-app.use(cors({ origin: true, credentials: true }));
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()).filter(Boolean)
+  : [];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(new Error(`CORS origin denied: ${origin}`));
+    },
+    credentials: true,
+  })
+);
 app.use((req, res, next) => {
   console.log("REQ", req.method, req.path, "Origin:", req.headers.origin);
   next();

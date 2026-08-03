@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "guest": "Harshita Sharma",
+    "review": "Loved the ambient lighting, super clean room, and helpful concierge service!",
+    "sentiment": "Positive"
+  },
+  {
+    "id": 2,
+    "guest": "Aryan Verma",
+    "review": "Great central location near major attractions and very quick room service.",
+    "sentiment": "Positive"
+  },
+  {
+    "id": 3,
+    "guest": "Sarah Jenkins",
+    "review": "Great host, spotlessly clean rooms, and beautiful mountain view location!",
+    "sentiment": "Positive"
+  }
+]

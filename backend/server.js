@@ -31,3 +31,7 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+app.listen(PORT, () => {
+  console.log(`🚀 StayInsight AI Backend running on port ${PORT}`);
+});

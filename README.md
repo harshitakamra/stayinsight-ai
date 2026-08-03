@@ -64,9 +64,41 @@ uvicorn main:app --reload
   - `CORS_ALLOWED_ORIGINS` = `https://<your-vercel-frontend-url>`
 
 ### Live URLs
-- Frontend URL: add your Vercel URL here
-- Backend URL: add your Render URL here
+- Frontend URL: https://stayinsight-65yv3dhms-harshitakamras-projects.vercel.app
+- Backend URL: https://stayinsight-ai-new.onrender.com
 
 ### Known limitations on free tier
 - Render free tier may spin down after inactivity, so the first request can take 30–60 seconds.
+- The first request after a period of inactivity may experience a cold start while the backend wakes up.
 - Vercel and Render free plans may have cold-start delays for the backend and frontend assets.
+
+## Live Deployment
+
+### Frontend
+https://stayinsight-65yv3dhms-harshitakamras-projects.vercel.app
+
+### Backend
+https://stayinsight-ai-new.onrender.com
+
+### Tech Stack
+
+Frontend
+- React
+- Vite
+- Tailwind CSS
+- Axios
+
+Backend
+- Node.js
+- Express.js
+- JWT Authentication
+- bcryptjs
+
+Deployment
+- Vercel
+- Render
+
+### Known Limitations
+
+- Render free tier spins down after periods of inactivity.
+- The first request after inactivity may take 30–60 seconds while the backend wakes up.

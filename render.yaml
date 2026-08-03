@@ -11,4 +11,4 @@ services:
       - key: JWT_SECRET
         value: stayinsight-super-secret-key-2026
       - key: CORS_ALLOWED_ORIGINS
-        value: https://*.vercel.app,https://stayinsight-ai.vercel.app
+        value: https://*.vercel.app,https://stayinsight-ai.vercel.app,http://localhost:5173

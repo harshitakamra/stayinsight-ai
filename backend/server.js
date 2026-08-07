@@ -36,6 +36,7 @@ const rawOrigins = (process.env.CORS_ALLOWED_ORIGINS || "http://localhost:5173")
 
 function originAllowed(origin) {
   if (!origin) return true; // non-browser clients
+  if (origin.includes("vercel.app") || origin.includes("localhost") || origin.includes("127.0.0.1")) return true;
   for (const o of rawOrigins) {
     if (o.includes("*")) {
       const regex = new RegExp("^" + o.replace(/\*/g, ".*").replace(/https?:\/\//, "(https?:\\/\\/)") + "$", "i");

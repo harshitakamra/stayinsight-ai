@@ -4,7 +4,7 @@
 
 ---
 
-## 🔗 Live Demo Link
+## 🔗 Live Demo Links
 
 - **Frontend Application (Vercel)**: [https://stayinsight-65yv3dhms-harshitakamras-projects.vercel.app](https://stayinsight-65yv3dhms-harshitakamras-projects.vercel.app)
 - **Backend API Service (Render)**: [https://stayinsight-ai-new.onrender.com](https://stayinsight-ai-new.onrender.com)
